@@ -4,9 +4,16 @@ Browser implementation of an automatically reconnecting websocket client.
 
 Sends also have support for callbacks. Message format is JSON.
 
+### Install
+```
+npm i wsrecon
+```
+
 ### Usage
 
 ```javascript
+const Socket = require('wsrecon')
+
 const socket = new Socket({
   url: 'ws://localhost:6000',
   timeout: 3000,
@@ -27,4 +34,4 @@ socket.send({ hello: 'Flat world' }, (data) => {
   console.log('Received message', data)
 })
 ```
-Enjoy!
+MIT licensed. Enjoy!
