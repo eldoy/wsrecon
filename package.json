@@ -1,0 +1,32 @@
+{
+  "name": "wsrecon",
+  "version": "0.0.1",
+  "description": "Auto reconnecting web socket client",
+  "main": "socket.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --watch",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fugroup/wsrecon.git"
+  },
+  "keywords": [
+    "web",
+    "socket",
+    "reconnect",
+    "auto"
+  ],
+  "author": "vidar@fugroup.net",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fugroup/wsrecon/issues"
+  },
+  "homepage": "https://github.com/fugroup/wsrecon#readme",
+  "dependencies": {
+    "uuid": "^3.3.2"
+  }
+}

@@ -1,29 +1,38 @@
-/*******************************
-/* Connection states for web socket
-/* const CONNECTING = 0  // The connection is not yet open
-/* const OPEN = 1        // The connection is open and ready to communicate
-/* const CLOSING = 2     // The connection is in the process of closing
-/* const CLOSED = 3      // The connection has been closed
-*/
+// Connection ready states for web socket
+const CONNECTING = 0
+const OPEN = 1
+const CLOSING = 2
+const CLOSED = 3
+
+// Connection close codes
+const CLOSED_NO_STATUS = 1005
+const CLOSE_NORMAL = 1000
+
+// Default options
+const TIMEOUT = 3000
+const URL = 'ws://localhost:3001'
+
+// Callback identifier
+const CBID = '$__cbid__'
 
 // These are the event functions
-const events = ['open', 'message', 'close', 'error']
+const EVENTS = ['open', 'message', 'close', 'error']
 
 // The connection class
 class Socket {
   constructor (options = {}) {
     // Bind to this object
-    for (const e of events) {
+    for (const e of EVENTS) {
       this[e] = this[e].bind(this)
     }
 
     // Default options
     if (!options.timeout) {
-      options.timeout = 3000
+      options.timeout = TIMEOUT
     }
 
     if (!options.url) {
-      options.url = 'ws://localhost:3001'
+      options.url = URL
     }
 
     if (typeof options.reconnect === 'undefined') {
@@ -32,6 +41,10 @@ class Socket {
 
     // Store options
     this.options = options
+
+    // Callbacks for sends
+    this.callbacks = {}
+    this.callbackId = 0
 
     // Set up socket connection
     this.connect()
@@ -45,7 +58,7 @@ class Socket {
   // Modify event listeners, type is 'add' or 'remove'
   listeners (type) {
     if (this.socket) {
-      for (let e of events) {
+      for (let e of EVENTS) {
         this.socket[`${type}EventListener`](e, this[e])
       }
     }
@@ -54,8 +67,8 @@ class Socket {
   // Connect to web socket server
   connect () {
     // Create a new socket
-    if (this.socket && this.socket.readyState > 0) {
-      this.socket.close()
+    if (this.socket && this.socket.readyState > CONNECTING) {
+      this.disconnect()
     }
 
     // Connect to socket
@@ -81,8 +94,8 @@ class Socket {
   }
 
   // Disconnect socket
-  disconnect (code) {
-    this.socket.close(code || 1005)
+  disconnect (code = CLOSED_NO_STATUS) {
+    this.socket.close(code)
   }
 
   // Socket open event
@@ -97,15 +110,18 @@ class Socket {
   message (event) {
     let data = JSON.parse(event.data)
 
-    // Call the options message callback
-    if (this.options.message) {
-      this.options.message(JSON.stringify(data, null, 2), event)
+    // Pass to callback or event handler
+    const callback = this.getCallback(data)
+    if (callback) {
+      callback(data, event)
+    } else if (this.options.message) {
+      this.options.message(data, event)
     }
   }
 
   // Socket close event
   close (event) {
-    if (event.code !== 1000) {
+    if (event.code !== CLOSE_NORMAL) {
       this.reconnect()
     }
 
@@ -117,7 +133,7 @@ class Socket {
 
   // Socket error event
   error (event) {
-    if (this.socket.readyState === 3) {
+    if (this.socket.readyState === CLOSED) {
       this.reconnect()
     }
 
@@ -127,13 +143,39 @@ class Socket {
     }
   }
 
-  // Send string through socket
-  send (str) {
-    if (this.socket.readyState === 1) {
-      this.socket.send(str)
+  // Send object to server
+  send (obj, callback) {
+    if (this.socket.readyState === OPEN) {
+      if (typeof callback === 'function') {
+        this.addCallback(obj, callback)
+      }
+      const data = JSON.stringify(obj)
+      this.socket.send(data)
+    }
+  }
+
+  // Add callback for this object
+  addCallback (obj, callback) {
+    const id = ++this.callbackId
+    obj[CBID] = id
+    this.callbacks[`${CBID}${id}`] = callback
+  }
+
+  // Get callback for data
+  getCallback (data) {
+    const id = data[CBID]
+    if (id) {
+      delete data[CBID]
+      const key = `${CBID}${id}`
+      const callback = this.callbacks[key]
+      if (callback) {
+        delete this.callbacks[key]
+        return callback
+      }
     }
   }
 }
 
 // For ES6 modules: export default Socket
-window.Socket = Socket
+// window.Socket = Socket
+module.exports = Socket
