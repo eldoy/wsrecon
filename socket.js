@@ -176,6 +176,4 @@ class Socket {
   }
 }
 
-// For ES6 modules: export default Socket
-// window.Socket = Socket
 module.exports = Socket
