@@ -5,7 +5,6 @@ const CLOSING = 2
 const CLOSED = 3
 
 // Connection close codes
-const CLOSED_NO_STATUS = 1005
 const CLOSE_NORMAL = 1000
 
 // Default options
@@ -13,7 +12,7 @@ const TIMEOUT = 3000
 const URL = 'ws://localhost:3001'
 
 // Callback identifier
-const CBID = '$__cbid__'
+const CALLBACK_ID = '$__cbid__'
 
 // These are the event functions
 const EVENTS = ['open', 'message', 'close', 'error']
@@ -72,7 +71,7 @@ class Socket {
   // Connect to web socket server
   connect () {
     // Create a new socket
-    if (this.socket && this.socket.readyState > CONNECTING) {
+    if (this.socket && this.readyState > CONNECTING) {
       this.disconnect()
     }
 
@@ -99,7 +98,7 @@ class Socket {
   }
 
   // Disconnect socket
-  disconnect (code = CLOSED_NO_STATUS) {
+  disconnect (code = CLOSE_NORMAL) {
     this.socket.close(code)
   }
 
@@ -162,19 +161,18 @@ class Socket {
   // Add callback for this object
   addCallback (obj, callback) {
     const id = ++this.callbackId
-    obj[CBID] = id
-    this.callbacks[`${CBID}${id}`] = callback
+    obj[CALLBACK_ID] = id
+    this.callbacks[id] = callback
   }
 
   // Get callback for data
   getCallback (data) {
-    const id = data[CBID]
+    const id = data[CALLBACK_ID]
     if (id) {
-      delete data[CBID]
-      const key = `${CBID}${id}`
-      const callback = this.callbacks[key]
+      delete data[CALLBACK_ID]
+      const callback = this.callbacks[id]
       if (callback) {
-        delete this.callbacks[key]
+        delete this.callbacks[id]
         return callback
       }
     }

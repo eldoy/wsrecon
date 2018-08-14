@@ -29,7 +29,7 @@ const socket = new Socket({
   }
 })
 
-// Alternative syntax for events
+// You can also register events like this
 socket.on('open', (event) => {
   console.log('Connection open')
 })

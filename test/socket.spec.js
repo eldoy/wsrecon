@@ -2,12 +2,10 @@ const Socket = require('../socket')
 let s
 let m
 
-beforeAll((done) => {
+beforeEach((done) => {
   s = new Socket({ url: 'ws://localhost:6000' })
   s.on('open', () => { done() })
-  s.on('message', (data) => {
-    m = data
-  })
+  s.on('message', (data) => { m = data })
 })
 
 describe('Socket', () => {
@@ -29,6 +27,13 @@ describe('Socket', () => {
     s.send({ baner: 'Nisse' }, (data) => {
       expect(data.baner).toEqual('Nisse')
       expect(data['$__cbid__']).toBeUndefined()
+      done()
+    })
+  })
+
+  it('should support alternative on syntax for events', (done) => {
+    s.on('message', (data) => {
+      expect(data.message).toEqual('Welcome')
       done()
     })
   })
