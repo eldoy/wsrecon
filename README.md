@@ -18,12 +18,26 @@ const socket = new Socket({
   url: 'ws://localhost:6000',
   timeout: 3000,
   reconnect: true,
-  open: () => {
+  open: (event) => {
     console.log('Connection open')
   },
-  message: (data) => {
+  close: (event) => {
+    console.log('Connection closed')
+  },
+  message: (data, event) => {
     console.log('Received message', data)
   }
+})
+
+// Alternative syntax for events
+socket.on('open', (event) => {
+  console.log('Connection open')
+})
+socket.on('close', (event) => {
+  console.log('Connection closed')
+})
+socket.on('message', (data, event) => {
+  console.log('Received message', data)
 })
 
 // Send message

@@ -64,6 +64,11 @@ class Socket {
     }
   }
 
+  // Alternative syntax for events
+  on (event, fn) {
+    this.options[event] = fn
+  }
+
   // Connect to web socket server
   connect () {
     // Create a new socket

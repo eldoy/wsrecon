@@ -3,14 +3,10 @@ let s
 let m
 
 beforeAll((done) => {
-  s = new Socket({
-    url: 'ws://localhost:6000',
-    open: () => {
-      done()
-    },
-    message: (data) => {
-      m = data
-    }
+  s = new Socket({ url: 'ws://localhost:6000' })
+  s.on('open', () => { done() })
+  s.on('message', (data) => {
+    m = data
   })
 })
 
