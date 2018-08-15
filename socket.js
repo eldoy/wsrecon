@@ -68,7 +68,6 @@ class Socket {
   // Reconnect with a timer
   reconnect () {
     if (this.options.reconnect) {
-      this.listeners('remove')
       setTimeout(() => { this.connect() }, this.options.timeout)
     }
   }
@@ -92,19 +91,21 @@ class Socket {
 
   // Socket close event
   close (event) {
+    this.listeners('remove')
     if (this.options.close) this.options.close(event)
     if (event.code !== CLOSE_NORMAL) this.reconnect()
   }
 
   // Socket error event
   error (event) {
-    if (this.socket.readyState === CLOSED) this.reconnect()
+    this.listeners('remove')
     if (this.options.error) this.options.error(event)
+    if (this.readyState === CLOSED) this.reconnect()
   }
 
   // Send object to server
   send (obj, callback) {
-    if (this.socket.readyState === OPEN) {
+    if (this.readyState === OPEN) {
       if (callback) this.addCallback(obj, callback)
       this.socket.send(JSON.stringify(obj))
     }
