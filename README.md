@@ -24,6 +24,9 @@ const socket = new Socket({
   close: (event) => {
     console.log('Connection closed')
   },
+  error: (event) => {
+    console.log('Connection error')
+  },
   message: (data, event) => {
     console.log('Received message', data)
   }
@@ -35,6 +38,9 @@ socket.on('open', (event) => {
 })
 socket.on('close', (event) => {
   console.log('Connection closed')
+})
+socket.on('error', (event) => {
+  console.log('Connection error')
 })
 socket.on('message', (data, event) => {
   console.log('Received message', data)
