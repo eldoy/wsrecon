@@ -14,87 +14,61 @@ const URL = 'ws://localhost:3001'
 // Callback identifier
 const CALLBACK_ID = '$__cbid__'
 
-// These are the event functions
+// Event function names
 const EVENTS = ['open', 'message', 'close', 'error']
 
 // The connection class
 class Socket {
   constructor (options = {}) {
-    // Bind to this object
-    for (const e of EVENTS) {
-      this[e] = this[e].bind(this)
-    }
+    // Bind event functions to this instance
+    for (const e of EVENTS) this[e] = this[e].bind(this)
 
-    // Default options
-    if (!options.timeout) {
-      options.timeout = TIMEOUT
-    }
-
-    if (!options.url) {
-      options.url = URL
-    }
-
+    // Store options
+    if (!options.timeout) options.timeout = TIMEOUT
+    if (!options.url) options.url = URL
     if (typeof options.reconnect === 'undefined') {
       options.reconnect = true
     }
-
-    // Store options
     this.options = options
 
     // Callbacks for sends
     this.callbacks = {}
     this.callbackId = 0
 
-    // Set up socket connection
+    // Connect to socket
     this.connect()
   }
 
   // Ready state
   get readyState () {
-    return this.socket.readyState
+    return this.socket ? this.socket.readyState : -1
   }
 
   // Modify event listeners, type is 'add' or 'remove'
   listeners (type) {
-    if (this.socket) {
-      for (let e of EVENTS) {
-        this.socket[`${type}EventListener`](e, this[e])
-      }
+    if (!this.socket) return
+    for (let e of EVENTS) {
+      this.socket[`${type}EventListener`](e, this[e])
     }
   }
 
-  // Alternative syntax for events
+  // Register events
   on (event, fn) {
     this.options[event] = fn
   }
 
   // Connect to web socket server
   connect () {
-    // Create a new socket
-    if (this.socket && this.readyState > CONNECTING) {
-      this.disconnect()
-    }
-
-    // Connect to socket
+    if (this.readyState > CONNECTING) this.disconnect()
     this.socket = new WebSocket(this.options.url)
-
-    // Add listeners
     this.listeners('add')
   }
 
   // Reconnect with a timer
   reconnect () {
-    if (!this.options.reconnect) {
-      return
-    }
-
-    // Remove listeners
+    if (!this.options.reconnect) return
     this.listeners('remove')
-
-    // Reconnect every x seconds
-    setTimeout(() => {
-      this.connect()
-    }, this.options.timeout)
+    setTimeout(() => { this.connect() }, this.options.timeout)
   }
 
   // Disconnect socket
@@ -104,58 +78,33 @@ class Socket {
 
   // Socket open event
   open (event) {
-    // Call the options open callback
-    if (this.options.open) {
-      this.options.open(event)
-    }
+    if (this.options.open) this.options.open(event)
   }
 
   // Socket message event
   message (event) {
     let data = JSON.parse(event.data)
-
-    // Pass to callback or event handler
-    const callback = this.getCallback(data)
-    if (callback) {
-      callback(data, event)
-    } else if (this.options.message) {
-      this.options.message(data, event)
-    }
+    const handler = this.getCallback(data) || this.options.message
+    if (handler) handler(data, event)
   }
 
   // Socket close event
   close (event) {
-    if (event.code !== CLOSE_NORMAL) {
-      this.reconnect()
-    }
-
-    // Call the options close callback
-    if (this.options.close) {
-      this.options.close(event)
-    }
+    if (event.code !== CLOSE_NORMAL) this.reconnect()
+    if (this.options.close) this.options.close(event)
   }
 
   // Socket error event
   error (event) {
-    if (this.socket.readyState === CLOSED) {
-      this.reconnect()
-    }
-
-    // Call the options error callback
-    if (this.options.error) {
-      this.options.error(event)
-    }
+    if (this.socket.readyState === CLOSED) this.reconnect()
+    if (this.options.error) this.options.error(event)
   }
 
   // Send object to server
   send (obj, callback) {
-    if (this.socket.readyState === OPEN) {
-      if (typeof callback === 'function') {
-        this.addCallback(obj, callback)
-      }
-      const data = JSON.stringify(obj)
-      this.socket.send(data)
-    }
+    if (this.socket.readyState !== OPEN) return
+    if (callback) this.addCallback(obj, callback)
+    this.socket.send(JSON.stringify(obj))
   }
 
   // Add callback for this object
