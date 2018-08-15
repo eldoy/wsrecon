@@ -3,6 +3,7 @@ let s
 let m
 
 beforeEach((done) => {
+  if(s) s.disconnect()
   s = new Socket({ url: 'ws://localhost:6000' })
   s.on('open', () => { done() })
   s.on('message', (data) => { m = data })
@@ -16,6 +17,19 @@ describe('Socket', () => {
       expect(m.message).toEqual('Welcome')
       done()
     }, 10)
+  })
+
+  it('should reconnect automatically', (done) => {
+    s.options.timeout = 1
+    s.disconnect(4000)
+
+    setTimeout(() => {
+      s.send({ baner: 'Risse' }, (data) => {
+        console.log(data)
+        expect(data.baner).toEqual('Risse')
+        done()
+      })
+    }, 50)
   })
 
   it('should support callbacks', (done) => {

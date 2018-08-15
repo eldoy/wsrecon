@@ -46,9 +46,10 @@ class Socket {
 
   // Modify event listeners, type is 'add' or 'remove'
   listeners (type) {
-    if (!this.socket) return
-    for (let e of EVENTS) {
-      this.socket[`${type}EventListener`](e, this[e])
+    if (this.socket) {
+      for (let e of EVENTS) {
+        this.socket[`${type}EventListener`](e, this[e])
+      }
     }
   }
 
@@ -66,9 +67,10 @@ class Socket {
 
   // Reconnect with a timer
   reconnect () {
-    if (!this.options.reconnect) return
-    this.listeners('remove')
-    setTimeout(() => { this.connect() }, this.options.timeout)
+    if (this.options.reconnect) {
+      this.listeners('remove')
+      setTimeout(() => { this.connect() }, this.options.timeout)
+    }
   }
 
   // Disconnect socket
@@ -90,8 +92,8 @@ class Socket {
 
   // Socket close event
   close (event) {
-    if (event.code !== CLOSE_NORMAL) this.reconnect()
     if (this.options.close) this.options.close(event)
+    if (event.code !== CLOSE_NORMAL) this.reconnect()
   }
 
   // Socket error event
@@ -102,9 +104,10 @@ class Socket {
 
   // Send object to server
   send (obj, callback) {
-    if (this.socket.readyState !== OPEN) return
-    if (callback) this.addCallback(obj, callback)
-    this.socket.send(JSON.stringify(obj))
+    if (this.socket.readyState === OPEN) {
+      if (callback) this.addCallback(obj, callback)
+      this.socket.send(JSON.stringify(obj))
+    }
   }
 
   // Add callback for this object
