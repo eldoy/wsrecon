@@ -104,10 +104,25 @@ class Socket {
   }
 
   // Send object to server
-  send (obj, callback) {
+  send (obj) {
     if (this.readyState === OPEN) {
-      if (callback) this.addCallback(obj, callback)
       this.socket.send(JSON.stringify(obj))
+    }
+  }
+
+  // Fetch object from server
+  // Returns promise if no callback given
+  fetch (obj, callback) {
+    if (this.readyState === OPEN) {
+      if (callback) {
+        this.addCallback(obj, callback)
+        this.send(obj)
+      } else {
+        return new Promise((resolve, reject) => {
+          this.addCallback(obj, (data) => { resolve(data) })
+          this.send(obj)
+        })
+      }
     }
   }
 

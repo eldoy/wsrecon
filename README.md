@@ -46,12 +46,22 @@ socket.on('message', (data, event) => {
   console.log('Received message', data)
 })
 
-// Send message
-socket.send({ hello: 'Flat world' })
+// Send message, data arrives in message event
+socket.send({ hello: 'socket' })
 
-// Send message with callback
-socket.send({ hello: 'Flat world' }, (data) => {
+// Send message and fetch data with callback
+socket.fetch({ hello: 'socket' }, (data) => {
   console.log('Received message', data)
 })
+
+// Send message and fetch data with promises
+socket.fetch({ hello: 'socket' }).then((data) => {
+  console.log('Received message', data)
+})
+
+// Send message and fetch data with async / await
+const data = await socket.fetch({ hello: 'socket' })
+console.log('Received message', data)
+
 ```
 MIT licensed. Enjoy!

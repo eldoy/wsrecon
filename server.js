@@ -5,6 +5,7 @@ const WebSocket = require('ws')
 let connections = []
 
 const server = new WebSocket.Server({ port: 6000 })
+console.log('Websocket server listening on port 6000')
 
 server.on('connection', (socket) => {
   socket.id = uuidv4()

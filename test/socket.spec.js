@@ -6,7 +6,9 @@ beforeEach((done) => {
   if(s) s.disconnect()
   s = new Socket({ url: 'ws://localhost:6000' })
   s.on('open', () => { done() })
-  s.on('message', (data) => { m = data })
+  s.on('message', (data) => {
+    m = data
+  })
 })
 
 describe('Socket', () => {
@@ -24,25 +26,48 @@ describe('Socket', () => {
     s.disconnect(4000)
 
     setTimeout(() => {
-      s.send({ baner: 'Risse' }, (data) => {
-        console.log(data)
+      s.fetch({ baner: 'Risse' }, (data) => {
         expect(data.baner).toEqual('Risse')
         done()
       })
     }, 50)
   })
 
+  it('should send data to the server', (done) => {
+    s.send({ baner: 'Lisse' })
+
+    setTimeout(() => {
+      expect(m.baner).toEqual('Lisse')
+      expect(m['$__cbid__']).toBeUndefined()
+      done()
+    }, 50)
+  })
+
   it('should support callbacks', (done) => {
-    s.send({ baner: 'Lisse' }, (data) => {
+    s.fetch({ baner: 'Lisse' }, (data) => {
       expect(data.baner).toEqual('Lisse')
       expect(data['$__cbid__']).toBeUndefined()
     })
 
-    s.send({ baner: 'Nisse' }, (data) => {
+    s.fetch({ baner: 'Nisse' }, (data) => {
       expect(data.baner).toEqual('Nisse')
       expect(data['$__cbid__']).toBeUndefined()
       done()
     })
+  })
+
+  it('should support promises', (done) => {
+    s.fetch({ baner: 'Lisse' }).then((data) => {
+      expect(data.baner).toEqual('Lisse')
+      expect(data['$__cbid__']).toBeUndefined()
+      done()
+    })
+  })
+
+  it('should support promises async await', async () => {
+    const data = await s.fetch({ baner: 'Lisse' })
+    expect(data.baner).toEqual('Lisse')
+    expect(data['$__cbid__']).toBeUndefined()
   })
 
   it('should support alternative on syntax for events', (done) => {
