@@ -4,7 +4,7 @@ let m
 
 beforeEach((done) => {
   if(s) s.disconnect()
-  s = new Socket({ url: 'ws://localhost:6000' })
+  s = new Socket('ws://localhost:6000')
   s.on('open', () => { done() })
   s.on('message', (data) => {
     m = data

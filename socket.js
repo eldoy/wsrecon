@@ -9,7 +9,7 @@ const CLOSE_NORMAL = 1000
 
 // Default options
 const TIMEOUT = 3000
-const URL = 'ws://localhost:3001'
+const URL = 'ws://localhost:6000'
 
 // Callback identifier
 const CALLBACK_ID = '$__cbid__'
@@ -19,13 +19,15 @@ const EVENTS = ['open', 'message', 'close', 'error']
 
 // The connection class
 class Socket {
-  constructor (options = {}) {
+  constructor (url, options = {}) {
     // Bind event functions to this instance
     for (const e of EVENTS) this[e] = this[e].bind(this)
 
+    // Store url
+    this.url = url || URL
+
     // Store options
     if (!options.timeout) options.timeout = TIMEOUT
-    if (!options.url) options.url = URL
     if (typeof options.reconnect === 'undefined') {
       options.reconnect = true
     }
@@ -61,7 +63,7 @@ class Socket {
   // Connect to web socket server
   connect () {
     if (this.readyState > CONNECTING) this.disconnect()
-    this.socket = new WebSocket(this.options.url)
+    this.socket = new WebSocket(this.url)
     this.listeners('add')
   }
 

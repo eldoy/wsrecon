@@ -14,8 +14,7 @@ npm i wsrecon
 ```javascript
 const Socket = require('wsrecon')
 
-const socket = new Socket({
-  url: 'ws://localhost:6000',
+const socket = new Socket('ws://localhost:6000', {
   timeout: 3000,
   reconnect: true,
   open: (event) => {
