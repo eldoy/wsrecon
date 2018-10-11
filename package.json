@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fugroup/wsrecon.git"
+    "url": "https://github.com/fugroup/wsrecon.git"
   },
   "keywords": [
     "web",
@@ -20,7 +20,7 @@
     "reconnect",
     "auto"
   ],
-  "author": "Vidar",
+  "author": "fugroup <vidar@fugroup.net>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/fugroup/wsrecon/issues"
