@@ -1,4 +1,4 @@
-const Socket = require('../socket')
+const Socket = require('../index.js')
 let s
 let m
 

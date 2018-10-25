@@ -1,8 +1,8 @@
 {
   "name": "wsrecon",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Auto reconnecting web socket client with callback support",
-  "main": "socket.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
@@ -18,7 +18,14 @@
     "web",
     "socket",
     "reconnect",
-    "auto"
+    "auto",
+    "automatic",
+    "websocket",
+    "client",
+    "browser",
+    "fetch",
+    "promises",
+    "callback"
   ],
   "author": "fugroup <vidar@fugroup.net>",
   "license": "MIT",
@@ -28,6 +35,7 @@
   "homepage": "https://github.com/fugroup/wsrecon#readme",
   "dependencies": {},
   "devDependencies": {
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "ws": "^6.1.0"
   }
 }
