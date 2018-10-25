@@ -70,9 +70,19 @@ describe('Socket', () => {
     expect(data['$__cbid__']).toBeUndefined()
   })
 
-  it('should support alternative on syntax for events', (done) => {
+  it('should support syntax for events', (done) => {
     s.on('message', (data) => {
       expect(data.message).toEqual('Welcome')
+      done()
+    })
+  })
+
+  it('should support multiple events', (done) => {
+    let count = 0
+    const s2 = new Socket('ws://localhost:6000')
+    s2.on('open', () => { count++ })
+    s2.on('open', () => {
+      expect(count).toEqual(1);
       done()
     })
   })

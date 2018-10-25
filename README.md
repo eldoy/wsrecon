@@ -1,8 +1,8 @@
 # Reconnecting Websocket
 
-Browser implementation of an isomorphic automatically reconnecting websocket client.
+Browser implementation of an isomorphic automatically reconnecting websocket client. Sends also have support for callbacks.
 
-Sends also have support for callbacks. Message format is JSON. Works perfectly with Node.js servers, script or Server Side Rendering with Next (React) or Nuxt (Vue).
+Message format is JSON. Works perfectly with Node.js servers, script or Server Side Rendering with Next (React) or Nuxt (Vue).
 
 ### Install
 ```
@@ -16,22 +16,10 @@ const Socket = require('wsrecon')
 
 const socket = new Socket('ws://localhost:6000', {
   timeout: 3000,
-  reconnect: true,
-  open: (event) => {
-    console.log('Connection open')
-  },
-  close: (event) => {
-    console.log('Connection closed')
-  },
-  error: (event) => {
-    console.log('Connection error')
-  },
-  message: (data, event) => {
-    console.log('Received message', data)
-  }
+  reconnect: true
 })
 
-// You can also register events like this
+// Register events like this
 socket.on('open', (event) => {
   console.log('Connection open')
 })
