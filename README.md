@@ -1,8 +1,8 @@
 # Reconnecting Websocket
 
-Browser implementation of an automatically reconnecting websocket client.
+Browser implementation of an isomorphic automatically reconnecting websocket client.
 
-Sends also have support for callbacks. Message format is JSON.
+Sends also have support for callbacks. Message format is JSON. Works perfectly with Node.js servers, script or Server Side Rendering with Next (React) or Nuxt (Vue).
 
 ### Install
 ```
@@ -61,6 +61,5 @@ socket.fetch({ hello: 'socket' }).then((data) => {
 // Send message and fetch data with async / await
 const data = await socket.fetch({ hello: 'socket' })
 console.log('Received message', data)
-
 ```
 MIT licensed. Enjoy!
