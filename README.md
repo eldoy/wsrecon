@@ -10,25 +10,34 @@ npm i wsrecon
 ```
 
 ### Usage
+The client wraps the normal WebSocket browser client or uses the ws Node.js client if not in the browser.
 
+The client will send { $ping: 1 } and must receive { $pong: 1 } from the server
+If the pong is not received and the ping timeout is reached, the socket is destroyed. Set ping to false if your server is not set up for it.
 ```javascript
 const Socket = require('wsrecon')
 
 const socket = new Socket('ws://localhost:6000', {
-  timeout: 3000,
-  reconnect: true
+  // Reconnect timeout in ms, set to false to not automatically reconnect
+  reconnect: 1000,
+
+  // Ping timeout in ms, set to false to not ping the server
+  ping: 3000
 })
 
 // Register events like this
 socket.on('open', (event) => {
   console.log('Connection open')
 })
+
 socket.on('close', (event) => {
   console.log('Connection closed')
 })
+
 socket.on('error', (event) => {
   console.log('Connection error')
 })
+
 socket.on('message', (data, event) => {
   console.log('Received message', data)
 })

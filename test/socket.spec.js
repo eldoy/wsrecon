@@ -22,7 +22,7 @@ describe('Socket', () => {
   })
 
   it('should reconnect automatically', (done) => {
-    s.options.timeout = 1
+    s.options.reconnect = 1
     s.disconnect(4000)
 
     setTimeout(() => {
@@ -85,5 +85,16 @@ describe('Socket', () => {
       expect(count).toEqual(1);
       done()
     })
+  })
+
+  it('should support ping ', (done) => {
+    const s2 = new Socket('ws://localhost:6000')
+    setTimeout(() => {
+      s2.send({ $ping: 1 })
+      s2.on('message', (data) => {
+        expect(data).toEqual({ $pong: 1 })
+        done()
+      })
+    }, 100)
   })
 })

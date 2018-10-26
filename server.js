@@ -16,9 +16,15 @@ server.on('connection', (socket) => {
   socket.send(JSON.stringify({ message: 'Welcome' }))
 
   socket.on('message', (msg) => {
-    console.log('Received:', msg)
-    for (const s of connections) {
-      s.send(msg)
+    msg = JSON.parse(msg)
+    console.log('Received: %o', msg)
+    if (msg.$ping) {
+      console.log('SENDING PONG')
+      socket.send(JSON.stringify({ $pong: 1 }))
+    } else {
+      for (const s of connections) {
+        s.send(JSON.stringify(msg))
+      }
     }
   })
 
