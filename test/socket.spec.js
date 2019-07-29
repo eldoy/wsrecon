@@ -38,7 +38,7 @@ describe('Socket', () => {
 
     setTimeout(() => {
       expect(m.baner).toEqual('Lisse')
-      expect(m['$__cbid__']).toBeUndefined()
+      expect(m['$cbid']).toBeUndefined()
       done()
     }, 50)
   })
@@ -46,12 +46,12 @@ describe('Socket', () => {
   it('should support callbacks', (done) => {
     s.fetch({ baner: 'Lisse' }, (data) => {
       expect(data.baner).toEqual('Lisse')
-      expect(data['$__cbid__']).toBeUndefined()
+      expect(data['$cbid']).toBeUndefined()
     })
 
     s.fetch({ baner: 'Nisse' }, (data) => {
       expect(data.baner).toEqual('Nisse')
-      expect(data['$__cbid__']).toBeUndefined()
+      expect(data['$cbid']).toBeUndefined()
       done()
     })
   })
@@ -59,7 +59,7 @@ describe('Socket', () => {
   it('should support promises', (done) => {
     s.fetch({ baner: 'Lisse' }).then((data) => {
       expect(data.baner).toEqual('Lisse')
-      expect(data['$__cbid__']).toBeUndefined()
+      expect(data['$cbid']).toBeUndefined()
       done()
     })
   })
@@ -67,7 +67,7 @@ describe('Socket', () => {
   it('should support promises async await', async () => {
     const data = await s.fetch({ baner: 'Lisse' })
     expect(data.baner).toEqual('Lisse')
-    expect(data['$__cbid__']).toBeUndefined()
+    expect(data['$cbid']).toBeUndefined()
   })
 
   it('should support syntax for events', (done) => {
