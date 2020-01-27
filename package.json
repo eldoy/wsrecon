@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "jest --watch --runInBand --detectOpenHandles",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "minify": "node scripts/minify.js",
+    "build": "node scripts/build.js"
   },
   "repository": {
     "type": "git",
@@ -35,7 +37,8 @@
   },
   "homepage": "https://github.com/eldoy/wsrecon#readme",
   "dependencies": {
-    "isomorphic-ws": "^4.0.1"
+    "isomorphic-ws": "^4.0.1",
+    "uglify-es": "^3.3.9"
   },
   "devDependencies": {
     "jest": "^25.1.0",
