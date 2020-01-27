@@ -1,18 +1,18 @@
 {
   "name": "wsrecon",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Isomorphic auto reconnecting web socket client with callback support",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "jest --watch",
+    "test": "jest --watch --runInBand --detectOpenHandles",
     "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fugroup/wsrecon.git"
+    "url": "https://github.com/eldoy/wsrecon.git"
   },
   "keywords": [
     "web",
@@ -28,18 +28,19 @@
     "callback",
     "isomorphic"
   ],
-  "author": "fugroup <vidar@fugroup.net>",
+  "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fugroup/wsrecon/issues"
+    "url": "https://github.com/eldoy/wsrecon/issues"
   },
-  "homepage": "https://github.com/fugroup/wsrecon#readme",
+  "homepage": "https://github.com/eldoy/wsrecon#readme",
   "dependencies": {
     "isomorphic-ws": "^4.0.1",
-    "ws": "^7.1.1"
+    "ws": "^7.2.1"
   },
   "devDependencies": {
-    "jest": "^24.8.0",
-    "uuid": "^3.3.2"
+    "jest": "^25.1.0",
+    "sirloin": "^0.14.8",
+    "uuid": "^3.4.0"
   }
 }
