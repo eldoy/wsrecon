@@ -1,6 +1,6 @@
 {
   "name": "wsrecon",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "description": "Isomorphic auto reconnecting web socket client with callback support",
   "main": "index.js",
   "directories": {
@@ -9,7 +9,6 @@
   "scripts": {
     "test": "jest --watch --runInBand --detectOpenHandles",
     "start": "nodemon server.js",
-    "minify": "node scripts/minify.js",
     "build": "node scripts/build.js"
   },
   "repository": {
