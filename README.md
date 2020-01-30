@@ -25,27 +25,7 @@ const socket = await client('ws://localhost:6000', {
   ping: false,
 
   // Disconnect timeout when $pong is not received
-  disconnect: 3000,
-
-  // Message event
-  onmessage: function(data) {
-    console.log(data)
-  },
-
-  // Open event
-  onopen: function(socket, event) {
-    console.log(socket, event)
-  },
-
-  // Error event
-  onerror: function(event) {
-    console.log(event)
-  },
-
-  // Close event
-  onclose: function(event) {
-    console.log(event)
-  }
+  disconnect: 3000
 })
 
 // Register events like this

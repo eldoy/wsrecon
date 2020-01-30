@@ -21,7 +21,24 @@ module.exports = async function(url, options) {
   if (typeof options.disconnect === 'undefined') options.disconnect = 3000
 
   // Variables
-  var socket, callbacks, cid, interval, timeout
+  var socket, callbacks, cid, interval, timeout, events = {}
+
+  // Events
+  var EVENTS = ['message', 'open', 'close', 'error']
+  for (var i = 0; i < EVENTS.length; i++) {
+    events[EVENTS[i]] = []
+  }
+
+  // Register events
+  function on(name, fn) {
+    events[name].push(fn)
+  }
+
+  function run(name, ...args) {
+    for (var i = 0; i < events[name].length; i++) {
+      events[name][i](...args)
+    }
+  }
 
   function connect(resolve, reject) {
     callbacks = {}
@@ -37,33 +54,27 @@ module.exports = async function(url, options) {
           callbacks[id](data, event)
           delete callbacks[id]
         }
-      } else if (options.onmessage) {
-        options.onmessage(data, event)
+      } else {
+        run('message', data, event)
       }
     }
 
     socket.onopen = function(event) {
       if (resolve) resolve(api)
+      run('open', api, event)
       ping()
-      if (options.onopen) {
-        options.onopen(api, event)
-      }
     }
 
     socket.onerror = function(event) {
       if (reject) reject(event)
-      if (options.onerror) {
-        options.onerror(event)
-      }
+      run('error', event)
     }
 
     socket.onclose = function(event) {
       if (options.reconnect) {
         setTimeout(connect, options.reconnect)
       }
-      if (options.onclose) {
-        options.onclose(event)
-      }
+      run('close', event)
     }
   }
 
@@ -86,9 +97,9 @@ module.exports = async function(url, options) {
     }
   }
 
-  function send(obj) {
+  function send(params) {
     if (socket.readyState === OPEN) {
-      socket.send(JSON.stringify(obj))
+      socket.send(JSON.stringify(params))
     }
   }
 
@@ -100,7 +111,7 @@ module.exports = async function(url, options) {
     })
   }
 
-  var api = { connect, send, fetch, disconnect }
+  var api = { on, connect, send, fetch, disconnect }
 
   return new Promise(connect)
 }

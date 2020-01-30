@@ -10,11 +10,10 @@ describe('socket', () => {
   })
 
   it('should send data', async (done) => {
-    const s = await socket('ws://localhost:6000', {
-      onmessage: function(data) {
-        expect(data.value).toBe('hello')
-        done()
-      }
+    const s = await socket('ws://localhost:6000')
+    s.on('message', function(data) {
+      expect(data.value).toBe('hello')
+      done()
     })
     s.send({ value: 'hello' })
   })
