@@ -36,12 +36,12 @@
   },
   "homepage": "https://github.com/eldoy/wsrecon#readme",
   "dependencies": {
-    "isomorphic-ws": "^4.0.1",
-    "uglify-es": "^3.3.9"
+    "isomorphic-ws": "^4.0.1"
   },
   "devDependencies": {
-    "jest": "^25.1.0",
-    "sirloin": "^0.14.8",
-    "uuid": "^3.4.0"
+    "jest": "^26.6.3",
+    "sirloin": "^0.19.19",
+    "uglify-es": "^3.3.9",
+    "uuid": "^8.3.2"
   }
 }
