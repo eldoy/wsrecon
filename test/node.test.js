@@ -9,7 +9,7 @@ describe('socket', () => {
     await new Promise(r => setTimeout(r, 1000))
   })
 
-  it('should send data', async (done) => {
+  it('should send and receive data', async (done) => {
     const s = await socket('ws://localhost:6000')
     s.on('message', function(data) {
       expect(data.value).toBe('hello')
@@ -18,18 +18,14 @@ describe('socket', () => {
     s.send({ value: 'hello' })
   })
 
-  it('should fetch data', async () => {
-    const s = await socket('ws://localhost:6000')
-    const data = await s.fetch({ value: 'hello' })
-    expect(data.value).toBe('hello')
-    expect(data.$cbid).toBeUndefined()
-  })
-
-  it('should reconnect automatically', async () => {
-    const s = await socket('ws://localhost:6000')
+  it('should reconnect automatically', async (done) => {
+    const s = await socket('ws://localhost:6000', { timeout: 10 })
     s.close(4000)
     await new Promise(r => setTimeout(r, 100))
-    const data = await s.fetch({ hello: 'infinity' })
-    expect(data.hello).toBe('infinity')
+    s.send({ hello: 'infinity' })
+    s.on('message', function(data) {
+      expect(data.hello).toBe('infinity')
+      done()
+    })
   })
 })

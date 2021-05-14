@@ -2,11 +2,10 @@ var WebSocket = require('isomorphic-ws')
 
 module.exports = function(url, opt) {
   if (!opt) opt = {}
-  if (!opt.cbid) opt.cbid = '$cbid'
   if (typeof opt.timeout == 'undefined') opt.timeout = 1
 
   // Variables
-  var socket, callbacks, cid, interval, timeout, events = {}
+  var socket, events = {}
 
   // Events
   var EVENTS = ['message', 'open', 'close', 'error']
@@ -26,22 +25,11 @@ module.exports = function(url, opt) {
   }
 
   function open(resolve, reject) {
-    callbacks = {}
-    cid = 0
     socket = new WebSocket(url)
 
     socket.onmessage = function(event) {
       var data = JSON.parse(event.data)
-      var id = data[opt.cbid]
-      if (id) {
-        delete data[opt.cbid]
-        if (callbacks[id]) {
-          callbacks[id](data, event)
-          delete callbacks[id]
-        }
-      } else {
-        run('message', data, event)
-      }
+      run('message', data, event)
     }
 
     socket.onopen = function(event) {
@@ -72,15 +60,7 @@ module.exports = function(url, opt) {
     }
   }
 
-  function fetch(params) {
-    return new Promise(function(resolve) {
-      params[opt.cbid] = ++cid
-      callbacks[cid] = function(data) { resolve(data) }
-      send(params)
-    })
-  }
-
-  var api = { on, open, send, fetch, close }
+  var api = { on, open, send, close }
 
   return new Promise(open)
 }
