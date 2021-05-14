@@ -3,8 +3,7 @@ var WebSocket = require('isomorphic-ws')
 module.exports = function(url, opt) {
   if (!opt) opt = {}
   if (!opt.cbid) opt.cbid = '$cbid'
-  if (typeof opt.reconnect == 'undefined') opt.reconnect = 100
-  if (typeof opt.disconnect == 'undefined') opt.disconnect = 100
+  if (typeof opt.timeout == 'undefined') opt.timeout = 1
 
   // Variables
   var socket, callbacks, cid, interval, timeout, events = {}
@@ -26,7 +25,7 @@ module.exports = function(url, opt) {
     }
   }
 
-  function connect(resolve, reject) {
+  function open(resolve, reject) {
     callbacks = {}
     cid = 0
     socket = new WebSocket(url)
@@ -56,14 +55,14 @@ module.exports = function(url, opt) {
     }
 
     socket.onclose = function(event) {
-      if (opt.reconnect) {
-        setTimeout(connect, opt.reconnect)
+      if (opt.timeout) {
+        setTimeout(open, opt.timeout)
       }
       run('close', event)
     }
   }
 
-  function disconnect(code) {
+  function close(code) {
     socket.close(code || 1000)
   }
 
@@ -81,7 +80,7 @@ module.exports = function(url, opt) {
     })
   }
 
-  var api = { on, connect, send, fetch, disconnect }
+  var api = { on, open, send, fetch, close }
 
-  return new Promise(connect)
+  return new Promise(open)
 }

@@ -26,8 +26,8 @@ describe('socket', () => {
   })
 
   it('should reconnect automatically', async () => {
-    const s = await socket('ws://localhost:6000', { reconnect: 1 })
-    s.disconnect(4000)
+    const s = await socket('ws://localhost:6000')
+    s.close(4000)
     await new Promise(r => setTimeout(r, 100))
     const data = await s.fetch({ hello: 'infinity' })
     expect(data.hello).toBe('infinity')
