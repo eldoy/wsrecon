@@ -1,6 +1,6 @@
 var WebSocket = require('isomorphic-ws')
 
-module.exports = async function(url, opt) {
+module.exports = function(url, opt) {
   if (!opt) opt = {}
   if (!opt.cbid) opt.cbid = '$cbid'
   if (typeof opt.reconnect == 'undefined') opt.reconnect = 100
