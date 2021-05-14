@@ -3,8 +3,8 @@ var WebSocket = require('isomorphic-ws')
 module.exports = async function(url, opt) {
   if (!opt) opt = {}
   if (!opt.cbid) opt.cbid = '$cbid'
-  if (typeof opt.reconnect === 'undefined' || opt.reconnect === true) opt.reconnect = 100
-  if (typeof opt.disconnect === 'undefined') opt.disconnect = 100
+  if (typeof opt.reconnect == 'undefined') opt.reconnect = 100
+  if (typeof opt.disconnect == 'undefined') opt.disconnect = 100
 
   // Variables
   var socket, callbacks, cid, interval, timeout, events = {}
