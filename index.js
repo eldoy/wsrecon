@@ -1,13 +1,6 @@
 var WebSocket = require('isomorphic-ws')
 
 module.exports = async function(url, options) {
-  // Connection ready states for web socket
-  var OPEN = 1
-
-  // Connection close codes
-  var CLOSE_NORMAL = 1000
-  var CLOSE_AWAY = 1001
-
   // Callback identifier
   var CBID = '$cbid'
 
@@ -74,12 +67,11 @@ module.exports = async function(url, options) {
   }
 
   function disconnect(code) {
-    code = code || CLOSE_NORMAL
-    socket.close(code)
+    socket.close(code || 1000)
   }
 
   function send(params) {
-    if (socket.readyState === OPEN) {
+    if (socket.readyState == 1) {
       socket.send(JSON.stringify(params))
     }
   }
