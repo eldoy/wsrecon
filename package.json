@@ -1,6 +1,6 @@
 {
   "name": "wsrecon",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Isomorphic auto reconnecting web socket client with callback support",
   "main": "index.js",
   "directories": {
