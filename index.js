@@ -1,13 +1,10 @@
 var WebSocket = require('isomorphic-ws')
 
-module.exports = async function(url, options) {
-  // Callback identifier
-  var CBID = '$cbid'
-
-  // Options
-  if (!options) options = {}
-  if (typeof options.reconnect === 'undefined' || options.reconnect === true) options.reconnect = 1000
-  if (typeof options.disconnect === 'undefined') options.disconnect = 3000
+module.exports = async function(url, opt) {
+  if (!opt) opt = {}
+  if (!opt.cbid) opt.cbid = '$cbid'
+  if (typeof opt.reconnect === 'undefined' || opt.reconnect === true) opt.reconnect = 1000
+  if (typeof opt.disconnect === 'undefined') opt.disconnect = 3000
 
   // Variables
   var socket, callbacks, cid, interval, timeout, events = {}
@@ -36,9 +33,9 @@ module.exports = async function(url, options) {
 
     socket.onmessage = function(event) {
       var data = JSON.parse(event.data)
-      var id = data[CBID]
+      var id = data[opt.cbid]
       if (id) {
-        delete data[CBID]
+        delete data[opt.cbid]
         if (callbacks[id]) {
           callbacks[id](data, event)
           delete callbacks[id]
@@ -59,8 +56,8 @@ module.exports = async function(url, options) {
     }
 
     socket.onclose = function(event) {
-      if (options.reconnect) {
-        setTimeout(connect, options.reconnect)
+      if (opt.reconnect) {
+        setTimeout(connect, opt.reconnect)
       }
       run('close', event)
     }
@@ -78,7 +75,7 @@ module.exports = async function(url, options) {
 
   function fetch(params) {
     return new Promise(function(resolve) {
-      params[CBID] = ++cid
+      params[opt.cbid] = ++cid
       callbacks[cid] = function(data) { resolve(data) }
       send(params)
     })
