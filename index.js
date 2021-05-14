@@ -14,7 +14,6 @@ module.exports = async function(url, options) {
   // Options
   if (!options) options = {}
   if (typeof options.reconnect === 'undefined' || options.reconnect === true) options.reconnect = 1000
-  if (options.ping === true) options.ping = 1000
   if (typeof options.disconnect === 'undefined') options.disconnect = 3000
 
   // Variables
@@ -59,7 +58,6 @@ module.exports = async function(url, options) {
     socket.onopen = function(event) {
       if (resolve) resolve(api)
       run('open', api, event)
-      ping()
     }
 
     socket.onerror = function(event) {
@@ -78,20 +76,6 @@ module.exports = async function(url, options) {
   function disconnect(code) {
     code = code || CLOSE_NORMAL
     socket.close(code)
-  }
-
-  function ping() {
-    if (options.ping) {
-      clearInterval(interval)
-      clearTimeout(timeout)
-
-      interval = setInterval(function() { send({ $ping: 1 }) }, options.ping)
-
-      timeout = setTimeout(function() {
-        clearInterval(interval)
-        disconnect(CLOSE_AWAY)
-      }, options.disconnect)
-    }
   }
 
   function send(params) {
