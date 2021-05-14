@@ -5,7 +5,7 @@ const uglify = require('uglify-es')
 console.log('Building...')
 
 const lib = require('../index.js')
-const fn = 'socket'
+const fn = 'wsrecon'
 const code = `window.${fn} = ${lib.toString()}\n`
 if (!fs.existsSync('./dist')) {
   fs.mkdirSync('./dist')
