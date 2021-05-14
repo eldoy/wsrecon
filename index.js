@@ -2,10 +2,7 @@ var WebSocket = require('isomorphic-ws')
 
 module.exports = async function(url, options) {
   // Connection ready states for web socket
-  var CONNECTING = 0
   var OPEN = 1
-  var CLOSING = 2
-  var CLOSED = 3
 
   // Connection close codes
   var CLOSE_NORMAL = 1000
