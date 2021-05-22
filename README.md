@@ -34,6 +34,7 @@ socket.on('error', (event) => {
   console.log('Connection error')
 })
 
+// Data from server arrives here automatically JSON parsed
 socket.on('message', (data, event) => {
   console.log('Received message', data)
 })
