@@ -4,16 +4,13 @@ module.exports = function(url, opt) {
   if (!opt) opt = {}
   if (typeof opt.timeout == 'undefined') opt.timeout = 1
 
-  // Variables
   var socket, events = {}
 
-  // Events
   var EVENTS = ['message', 'open', 'close', 'error']
   for (var i = 0; i < EVENTS.length; i++) {
     events[EVENTS[i]] = []
   }
 
-  // Register events
   function on(name, fn) {
     events[name].push(fn)
   }
